@@ -1,0 +1,57 @@
+---
+title: "Question4_readme"
+author: "Ramzan Kamoto"
+date: "2024-06-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question4
+
+This readme is just to help organise my thoughts and execute my code for question 4. We start again by reading in our rds files using our read_rds function. 
+
+Note that in the final readme all these codes will be sourced so it shopuld work by just having the directory path and function.
+
+```{r}
+directory_path <- "/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question4/data/olympics"
+rds_data_list <- read_rds_files(directory_path)
+```
+
+Lets first analyse Indias performance in past summer olymics and just compare with BRICS nations. To do this we will create a function 
+
+Lets first see a list of the unique events and see if we can make some events individual and others some team awards. 
+
+```{r}
+library(tidyverse)
+
+unique_event <- (summer$Event)
+
+```
+As you can see, there are a number of different events and this is inflating the number of medals per country. What we will do is create a new variable Label which will tell us whether an event is a team event or an individual event. 
+
+
+```{r}
+s_games <- label_team_sports(summer)
+
+```
+We can now do further analysis on individual awards given that there are relatively fewer Team sports (at least for the summer games) so the medal count should not be affected as much. 
+
+
+```{r}
+list(unique(summer$Country))
+
+summer_plotdata <- s_games %>% filter(Label == "Individual", 
+                                      Country == c("IND", "CHI", "RUS","BRA", "RSA"))
+
+
+```
+
+So it turns out, most of Indias medals are from team sports. I assume this is also true for other countries like Brazil and football. So we are going to try to aggregate th data so that countries can recieve one meal for team sports. 
+
+```{r}
+
+```
+

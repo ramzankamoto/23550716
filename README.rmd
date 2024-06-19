@@ -1,0 +1,37 @@
+---
+output:
+  md_document:
+    variant: markdown_github
+---
+
+# Purpose
+
+This README will be my main document where I will explain my thinking process for answering all the questions. I have put all my questions in the solutions folder and will call on them where necessary. 
+
+
+```{r}
+
+rm(list = ls()) # Clean your environment:
+gc() # garbage collection - It can be useful to call gc after a large object has been removed, as this may prompt R to return memory to the operating system.
+library(tidyverse)
+list.files('code/', full.names = T, recursive = T) %>% .[grepl('.R', .)] %>% as.list() %>% walk(~source(.))
+```
+
+The first lines of code (which I comment out) are how I set up the folders using fmxdat and Texevier. 
+
+```{r}
+# #Create project
+# 
+# fmxdat::make_project(Mac=T,Open=T)
+# 
+# CHOSEN_LOCATION <- "/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716"
+# 
+# Texevier::create_template(directory = glue::glue("{CHOSEN_LOCATION}/"), template_name = "Question1")
+# Texevier::create_template(directory = glue::glue("{CHOSEN_LOCATION}/"), template_name = "Question2")
+# Texevier::create_template(directory = glue::glue("{CHOSEN_LOCATION}/"), template_name = "Question3")
+# Texevier::create_template(directory = glue::glue("{CHOSEN_LOCATION}/"), template_name = "Question4")
+# Texevier::create_template(directory = glue::glue("{CHOSEN_LOCATION}/"), template_name = "Question5")
+```
+
+
+

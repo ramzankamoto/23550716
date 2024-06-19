@@ -1,0 +1,101 @@
+---
+title: "Question 3"
+author: "Ramzan Kamoto"
+date: "2024-06-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 3 loading in data 
+
+First load and view the appropriate datasets.  
+
+```{r}
+alloc <- read_csv("/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question3/data/Ukraine_Aid/Financial Allocations.csv")
+commit <- read_csv("/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question3/data/Ukraine_Aid/Financial Commitments.csv")
+
+```
+
+For this question I will compare EU countries with Rest of the World (RoW) by creating a plot bubble plot that shows which countries have allocated more resources as a percentage of GDP. 
+
+First create a new dataframe with our variables of interest.
+
+```{r}
+new_commit <- commit %>% 
+    select(Country,`EU member` ,`GDP in 2021($ billion)`,`Total bilateral commitments($ billion)`) %>% 
+    mutate(commit_per_gdp = `Total bilateral commitments($ billion)`/`GDP in 2021($ billion)`*100)
+```
+
+ 
+We then clean up the data a little so that it is less error prone. 
+
+```{r}
+commit_df <- new_commit %>% 
+    rename(country = Country,
+           eu_member =`EU member`,
+           gdp = `GDP in 2021($ billion)`,
+           commit_gdp = commit_per_gdp
+           )
+```
+
+Use bubble plot function on our new dataframe 
+
+```{r}
+plot_gdp_vs_commit(commit_df)
+```
+From the plot we can clearly see that most EU nations are committing less than 1 % of their GDP to aid Ukraine. Only five countries commit more than 1 % of their total GDP and these countries all have relatively small GDP's. 
+
+From this we might suggest that EU nations could be doing more to aid Ukraine in this war. 
+
+Next we run a simple regression to see how strong the effect that being an EU member has on total bilateral allocation controlling for all other variables. 
+
+
+
+First we clean up the data again.  
+
+```{r}
+# Slightly messy but renames variables to be more usable.
+alloc_df <- alloc %>% 
+    rename(country = Country,
+           eu_member = `EU member`,
+           fin_alloc = `Financial allocations($ billion)`,
+           humanitarian_alloc = `Humanitarian allocations($ billion)`,
+           military_alloc = `Military allocations($ billion)`,
+           total_bi_alloc = `Total bilateral allocations($ billion)`,
+           share_eu_alloc = `Share in EU allocations($ billion)`) %>% 
+    select(-country)
+
+```
+
+Our linear regression 
+
+```{r}
+ols_model1 <- lm_eu_effect(alloc_df, "total_bi_alloc", control_vars = c("fin_alloc","humanitarian_alloc","military_alloc"))
+
+print(ols_model1)
+
+```
+Now we wish to make the table neater and more presentable, so we make use of the broom and kable packages. 
+
+```{r}
+# library(broom)
+# library(kableExtra)
+# 
+# tidy_model <- broom::tidy(ols_model1)
+#   print(tidy_model)
+#   
+# clean_model <- tidy_table(tidy_model) 
+# 
+# print(clean_model)
+
+# Come back to this, doesnt really look that lakker
+```
+
+
+
+
+
+

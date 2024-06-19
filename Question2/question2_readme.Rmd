@@ -1,0 +1,68 @@
+---
+title: "Question2_readme"
+author: "Ramzan Kamoto"
+date: "2024-06-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question2
+
+We use the rds function to load in the rds files and then bring in the csv's on their own. 
+
+
+```{r}
+
+library(tidyverse)
+
+custom_names <- c("spotify", "billboard_100")
+directory <- "/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question2/data/cold_v_met_rds"
+read_rds_files(directory, custom_names)
+
+coldplay <- read.csv("/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question2/data/Coldplay_vs_Metallica_csv/Coldplay.csv")
+metallica <- read.csv("/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question2/data/Coldplay_vs_Metallica_csv/metallica.csv")
+
+```
+We want to create boxplots that compare the danceability of of the top 5 most popular metallica albums with the top 5 most popular cold play albums 
+
+We start by doing some cleaning 
+```{r}
+#renaming the albums column to easily append
+coldplay1 <- coldplay %>% 
+    rename(album = album_name)
+
+```
+
+
+New data frames containing the songs in the top 5 albums 
+
+```{r}
+#select the variables that we will need to conduct some analysis 
+metallica_top_albums <- get_top_5_albums_songs(metallica) %>% 
+    select(name, album, popularity, danceability)
+
+metallica_top_albums$band <- "metallica"
+
+coldplay_top_albums <- get_top_5_albums_songs(coldplay1) %>% 
+    select(name, album, popularity, danceability)
+
+#Create a column that has all its values as the band name 
+coldplay_top_albums$band <- "coldplay"
+
+#bind the two data frames ready for plotting 
+top_albums <- bind_rows(metallica_top_albums, coldplay_top_albums)
+
+```
+
+
+Call function to plot danceability by album. 
+
+```{r}
+p <- create_danceability_boxplot(top_albums)
+```
+
+
+
