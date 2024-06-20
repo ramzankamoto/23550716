@@ -1,8 +1,10 @@
 ---
-title: "Question2_readme"
+title: "Question2"
 author: "Ramzan Kamoto"
 date: "2024-06-19"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -18,6 +20,8 @@ We use the rds function to load in the rds files and then bring in the csv's on 
 
 library(tidyverse)
 
+list.files('/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question2/code', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+
 custom_names <- c("spotify", "billboard_100")
 directory <- "/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question2/data/cold_v_met_rds"
 read_rds_files(directory, custom_names)
@@ -26,6 +30,8 @@ coldplay <- read.csv("/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Que
 metallica <- read.csv("/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question2/data/Coldplay_vs_Metallica_csv/metallica.csv")
 
 ```
+## Analysis 
+
 We want to create boxplots that compare the danceability of of the top 5 most popular metallica albums with the top 5 most popular cold play albums 
 
 We start by doing some cleaning 
@@ -35,18 +41,18 @@ coldplay1 <- coldplay %>%
     rename(album = album_name)
 
 ```
-
+### Dataframes 
 
 New data frames containing the songs in the top 5 albums 
 
 ```{r}
 #select the variables that we will need to conduct some analysis 
-metallica_top_albums <- get_top_5_albums_songs(metallica) %>% 
+metallica_top_albums <- get_top_5_albums_song(metallica) %>% 
     select(name, album, popularity, danceability)
 
 metallica_top_albums$band <- "metallica"
 
-coldplay_top_albums <- get_top_5_albums_songs(coldplay1) %>% 
+coldplay_top_albums <- get_top_5_albums_song(coldplay1) %>% 
     select(name, album, popularity, danceability)
 
 #Create a column that has all its values as the band name 
@@ -56,7 +62,7 @@ coldplay_top_albums$band <- "coldplay"
 top_albums <- bind_rows(metallica_top_albums, coldplay_top_albums)
 
 ```
-
+### Plot
 
 Call function to plot danceability by album. 
 
@@ -64,5 +70,8 @@ Call function to plot danceability by album.
 p <- create_danceability_boxplot(top_albums)
 ```
 
+## Summary 
+
+The two bands seem to be very comparable in terms of danceability. Most songs for both bands appear to be approximately 0.6, which when you consider these are their most popular albums may seem quite low. There are likely other factors that make these bands enjoyable which I do not explore here. 
 
 

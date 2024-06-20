@@ -2,24 +2,32 @@
 title: "Question 3"
 author: "Ramzan Kamoto"
 date: "2024-06-18"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Question 3 loading in data 
+## Load in Data
 
 First load and view the appropriate datasets.  
 
 ```{r}
+library(tidyverse)
+
+list.files('/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question3/code', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
+
+
 alloc <- read_csv("/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question3/data/Ukraine_Aid/Financial Allocations.csv")
 commit <- read_csv("/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question3/data/Ukraine_Aid/Financial Commitments.csv")
 
 ```
+## Data Cleaning 
 
-For this question I will compare EU countries with Rest of the World (RoW) by creating a plot bubble plot that shows which countries have allocated more resources as a percentage of GDP. 
+I will compare EU countries with Rest of the World (RoW) by creating a plot bubble plot that shows which countries have allocated more resources as a percentage of GDP. 
 
 First create a new dataframe with our variables of interest.
 
@@ -40,6 +48,8 @@ commit_df <- new_commit %>%
            commit_gdp = commit_per_gdp
            )
 ```
+
+## Plot
 
 Use bubble plot function on our new dataframe 
 
@@ -70,7 +80,7 @@ alloc_df <- alloc %>%
 
 ```
 
-Our linear regression 
+## Linear regression 
 
 ```{r}
 ols_model1 <- lm_eu_effect(alloc_df, "total_bi_alloc", control_vars = c("fin_alloc","humanitarian_alloc","military_alloc"))
@@ -78,6 +88,10 @@ ols_model1 <- lm_eu_effect(alloc_df, "total_bi_alloc", control_vars = c("fin_all
 print(ols_model1)
 
 ```
+Our regression shows that being a member of the EU is positively correlated with total billateral allocation. 
+
+
+
 Now we wish to make the table neater and more presentable, so we make use of the broom and kable packages. 
 
 ```{r}
@@ -95,7 +109,9 @@ Now we wish to make the table neater and more presentable, so we make use of the
 ```
 
 
+## Summary 
 
+On air, I would discuss this as a disgrace. Eventhough being in the EU is positively correlated with total bilateral allocation, the EU members simply do not commit enough as a percentage of their GDP. How can the rest of the world pitch in when major european states are not willing to commit. 
 
 
 

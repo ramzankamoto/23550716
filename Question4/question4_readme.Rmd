@@ -1,8 +1,10 @@
 ---
-title: "Question4_readme"
+title: "Question4"
 author: "Ramzan Kamoto"
 date: "2024-06-18"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -13,30 +15,32 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This readme is just to help organise my thoughts and execute my code for question 4. We start again by reading in our rds files using our read_rds function. 
 
-Note that in the final readme all these codes will be sourced so it shopuld work by just having the directory path and function.
+## Olympics
 
-```{r}
-directory_path <- "/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question4/data/olympics"
-rds_data_list <- read_rds_files(directory_path)
-```
-
-Lets first analyse Indias performance in past summer olymics and just compare with BRICS nations. To do this we will create a function 
-
-Lets first see a list of the unique events and see if we can make some events individual and others some team awards. 
+We have data on the Olympics dating as far back as 1896 to 2012. With the upcoming olympic games, it is appropriate to take a look back and analyse some of the trends in terms of winning medals that we have seen in the past
 
 ```{r}
 library(tidyverse)
 
-unique_event <- (summer$Event)
+list.files('/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question4/code', full.names = T, recursive = T) %>% as.list() %>% walk(~source(.))
 
+directory_path <- "/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question4/data/olympics"
+
+rds_data_list <- read_rds_files("/Users/ramzankamoto/Documents/Masters/DS_EXAM/23550716/Question4/data/olympics", custom_names = c("GDP","summer","winter"))
 ```
-As you can see, there are a number of different events and this is inflating the number of medals per country. What we will do is create a new variable Label which will tell us whether an event is a team event or an individual event. 
+# Data
+
+
+Initially we wanted to analyse Indias performance in previous olympic games. However, in order to clearly see how many medals a country has we have to ensure that medals are counted by event and not by athlete. The data in its current state, inflates the performance of countries who participate in team sports like hockey. 
+
+We use a function to label team sports team and individual sports individual. 
 
 
 ```{r}
 s_games <- label_team_sports(summer)
 
 ```
+
 We can now do further analysis on individual awards given that there are relatively fewer Team sports (at least for the summer games) so the medal count should not be affected as much. 
 
 
@@ -44,14 +48,28 @@ We can now do further analysis on individual awards given that there are relativ
 list(unique(summer$Country))
 
 summer_plotdata <- s_games %>% filter(Label == "Individual", 
-                                      Country == c("IND", "CHI", "RUS","BRA", "RSA"))
+                                      Country == c("USA", "GER", "GBR","RUS", "JAM"))
 
 
 ```
+## Plot 
 
-So it turns out, most of Indias medals are from team sports. I assume this is also true for other countries like Brazil and football. So we are going to try to aggregate th data so that countries can recieve one meal for team sports. 
+Next we try to use this data to come up with a plot for Individual Medals per Country.
 
 ```{r}
+#first we aggregate the models so the data is usable 
+s_plot_data <- aggregate_medals(summer_plotdata)
+
+#apply a function that adds up the medal count per year 
+aggregate_medals_summer <- aggregate_medal_counts(s_plot_data)
+
+#Plot the line graph 
+summer_plot <- plot_medal_counts(aggregate_medals_summer)
+print(summer_plot)
 
 ```
+
+The plot shows some countries that typically do well at the olympic games. The US and Russia since independence are the only countries to consistently achieve more than 10 medals. Great Britain is initially very strong but drops below 10 individual models for pretty much the remainder of the period. 
+
+
 
